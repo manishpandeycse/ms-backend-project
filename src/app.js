@@ -12,7 +12,11 @@ const { notFound, errorHandler } = require('./middleware/error');
 const app = express();
 app.set('trust proxy', 1);
 app.use(helmet());
-app.use(cors({ origin: env.clientUrl.split(','), credentials: true }));
+//app.use(cors({ origin: env.clientUrl.split(','), credentials: true }));
+app.use(cors({
+  origin: "https://shimmering-cendol-aa87c1.netlify.app",
+  credentials: true, // only if you use cookies
+}));
 if (!env.isProd) app.use(morgan('dev'));
 
 // Webhooks need the untouched raw body, so they are mounted BEFORE express.json()
