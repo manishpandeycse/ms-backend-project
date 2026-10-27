@@ -13,9 +13,24 @@ const app = express();
 app.set('trust proxy', 1);
 app.use(helmet());
 //app.use(cors({ origin: env.clientUrl.split(','), credentials: true }));
+const allowedOrigins = [
+  "https://shimmering-cendol-aa87c1.netlify.app",
+  "http://localhost:5173", // Vite dev
+  "http://localhost:3000", // CRA dev
+];
 app.use(cors({
-  origin: "https://shimmering-cendol-aa87c1.netlify.app",
-  credentials: true, // only if you use cookies
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+  // origin: "https://shimmering-cendol-aa87c1.netlify.app",
+  // credentials: true, // only if you use cookies
 }));
 if (!env.isProd) app.use(morgan('dev'));
 
